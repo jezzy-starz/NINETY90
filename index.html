@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ninety90 - Request Form</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        :root {
+            --checkers-teal: #38A8AE;
+            --checkers-dark: #2A8A8F;
+            --hyper-green: #51B94A;
+            --hyper-lime: #7ED321;
+            --black: #0A0A0A;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--black);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated Checkerboard Background */
+        .checker-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            background-image: 
+                repeating-linear-gradient(
+                    45deg,
+                    var(--checkers-teal) 0px,
+                    var(--checkers-teal) 40px,
+                    transparent 40px,
+                    transparent 80px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    var(--hyper-green) 0px,
+                    var(--hyper-green) 40px,
+                    transparent 40px,
+                    transparent 80px
+                );
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% { background-position: 0 0; }
+            100% { background-position: 80px 80px; }
+        }
+        
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--checkers-teal);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite;
+        }
+        
+        .particle:nth-child(2n) {
+            background: var(--hyper-green);
+            animation-delay: -5s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* Logo/Header Section */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            text-shadow: 4px 4px 0px var(--checkers-teal), 8px 8px 0px var(--hyper-green);
+            margin-bottom: 10px;
+        }
+        
+        .logo span {
+            color: var(--checkers-teal);
+        }
+        
+        .tagline {
+            color: var(--hyper-green);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: rgba(81, 185, 74, 0.1);
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 2px solid var(--hyper-green);
+            display: inline-block;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(56, 168, 174, 0.25);
+            border: 3px solid var(--checkers-teal);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--checkers-teal) 0px,
+                var(--checkers-teal) 20px,
+                var(--hyper-green) 20px,
+                var(--hyper-green) 40px
+            );
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 16px;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--checkers-teal);
+            box-shadow: 0 0 0 4px rgba(56, 168, 174, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        /* Snack Grid - Hyper Style */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .option-btn {
+            padding: 16px;
+            border: 3px solid #e0e0e0;
+            background: var(--white);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-btn:hover {
+            border-color: var(--checkers-teal);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 168, 174, 0.2);
+        }
+        
+        .option-btn.selected {
+            background: var(--checkers-teal);
+            color: var(--white);
+            border-color: var(--checkers-teal);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(56, 168, 174, 0.3);
+        }
+        
+        .option-btn.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 0.8rem;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--checkers-teal) 0%, var(--hyper-green) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(56, 168, 174, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, var(--hyper-green) 0%, var(--checkers-teal) 100%);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .success-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .success-subtext {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .form-card {
+                padding: 30px 20px;
+            }
+            
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--checkers-teal);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--hyper-green);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Backgrounds -->
+    <div class="checker-bg"></div>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="brand-header">
+            <div class="logo">ninety<span>90</span></div>
+            <div class="tagline">⚡ Hyper Fast Requests</div>
+        </div>
+        
+        <!-- Form Card -->
+        <div class="form-card" id="formCard">
+            <h2 class="form-title">Make Your Request</h2>
+            
+            <form id="requestForm" action="https://formspree.io/f/xeepzpoy" method="POST">
+                <!-- Name Field -->
+                <div class="input-group">
+                    <label for="name">Your Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your name...">
+                </div>
+                
+                <!-- Email Field (Optional but recommended for Formspree) -->
+                <div class="input-group">
+                    <label for="email">Your Email (Optional)</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com">
+                </div>
+                
+                <!-- Category Selection -->
+                <div class="input-group">
+                    <label>Category *</label>
+                    <div class="option-grid">
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'category', 'Snack')">🍿 Snack</button>
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'category', 'Drink')">🥤 Drink</button>
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'category', 'Meal')">🍕 Meal</button>
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'category', 'Other')">✨ Other</button>
+                    </div>
+                    <input type="hidden" id="category" name="category" required>
+                </div>
+                
+                <!-- Request Details -->
+                <div class="input-group">
+                    <label for="request">What do you need? *</label>
+                    <textarea id="request" name="request" required placeholder="Describe your request in detail..."></textarea>
+                </div>
+                
+                <!-- Urgency Selection -->
+                <div class="input-group">
+                    <label>Urgency Level</label>
+                    <div class="option-grid">
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'urgency', 'Standard')">🐢 Standard</button>
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'urgency', 'Priority')">⚡ Priority</button>
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'urgency', 'ASAP')">🚀 ASAP</button>
+                        <button type="button" class="option-btn" onclick="selectOption(this, 'urgency', 'Hyper60')">🔥 HYPER60</button>
+                    </div>
+                    <input type="hidden" id="urgency" name="urgency" value="Standard">
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="spinner" id="spinner"></span>
+                    <span id="btnText">SEND REQUEST 🚀</span>
+                </button>
+            </form>
+            
+            <!-- Success Message (Hidden by default) -->
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✅</div>
+                <div class="success-text">Request Received!</div>
+                <div class="success-subtext">We'll process your ninety90 order at hyper speed. Check your email for confirmation!</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: var(--checkers-teal); font-size: 0.9rem; opacity: 0.8;">
+            ⚡ Powered by ninety90 Hyper Delivery ⚡
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+        
+        // Handle option selection
+        function selectOption(btn, inputId, value) {
+            // Remove selected class from all buttons in the same group
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            
+            // Add selected class to clicked button
+            btn.classList.add('selected');
+            
+            // Set hidden input value
+            document.getElementById(inputId).value = value;
+        }
+        
+        // Form submission handler
+        document.getElementById('requestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btnText');
+            const form = document.getElementById('requestForm');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Validate category selection
+            const category = document.getElementById('category').value;
+            if (!category) {
+                alert('Please select a category!');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'SENDING...';
+            
+            try {
+                const formData = new FormData(form);
+                
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Hide form, show success
+                    form.style.display = 'none';
+                    successMessage.classList.add('show');
+                    
+                    // Reset form after 5 seconds (optional)
+                    setTimeout(() => {
+                        form.reset();
+                        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                        form.style.display = 'block';
+                        successMessage.classList.remove('show');
+                        submitBtn.disabled = false;
+                        spinner.style.display = 'none';
+                        btnText.textContent = 'SEND REQUEST 🚀';
+                    }, 5000);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                alert('Oops! Something went wrong. Please try again.');
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'SEND REQUEST 🚀';
+            }
+        });
+        
+        // Add some random movement to particles
+        setInterval(() => {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach(p => {
+                if (Math.random() > 0.95) {
+                    p.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)`;
+                }
+            });
+        }, 100);
+    </script>
+</body>
+</html>
